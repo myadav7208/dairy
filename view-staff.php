@@ -57,7 +57,7 @@
                                         echo "<tr>
                                             <th scope='row'>$i</th>
                                             <td><a href='staff.php?page_from=update&id=$id'><i class='fa fa-pencil' aria-hidden='true' style='margin-left:5px;color:green'></i></a>
-                                                <a href='delete.php?id=$id' ><i class='fa fa-trash' aria-hidden='true' style='margin-left:10px; color:red'></i></a>
+                                                <a href='delete.php?page_from=staff&id=$id' ><i class='fa fa-trash' aria-hidden='true' style='margin-left:10px; color:red'></i></a>
                                             </td>
                                             <td>$name</td>
                                             <td>$mobile</td>
