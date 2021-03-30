@@ -7,7 +7,7 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Staff</h1>
+                        <h1>Dashboard</h1>
                     </div>
                 </div>
             </div>
@@ -15,7 +15,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li class="active">Staff</li>
+                            <li class="active">Dashboard</li>
                         </ol>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
 
         <div class="card">
             <div class="card-header">
-                Staff List
+                Order List
             </div>
             <div class="card-body">
             <div class="table-responsive">
@@ -34,35 +34,30 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Actions</th>
                             <th scope="col">Name</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Address</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Remark</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
-                            $query = "select * from tbl_staff";
+                            $query = "select tc.name name, t_o.quantity quantity, t_o.order_fill_date ofd, t_o.remark remark from tbl_client tc inner join tbl_order t_o ON tc.id = t_o.client_id";
                             $i = 1;
-
+            
                             if($result = mysqli_query($conn, $query)){
                                 if(mysqli_num_rows($result) > 0){
                                     while($row = mysqli_fetch_assoc($result)){
-                                        $id = $row['id'];
                                         $name = $row['name'];
-                                        $email = $row['email'];
-                                        $mobile = $row['mobile'];
-                                        $address = $row['address'];
+                                        $quantity = $row['quantity'];
+                                        $date = $row['ofd'];
+                                        $remark = $row['remark'];
                                         echo "<tr>
                                             <th scope='row'>$i</th>
-                                            <td><a href='staff.php?page_from=update&id=$id'><i class='fa fa-pencil' aria-hidden='true' style='margin-left:5px;color:green'></i></a>
-                                                <a href='delete.php?page_from=staff&id=$id' ><i class='fa fa-trash' aria-hidden='true' style='margin-left:10px; color:red'></i></a>
-                                            </td>
                                             <td>$name</td>
-                                            <td>$mobile</td>
-                                            <td>$email</td>
-                                            <td>$address</td>
+                                            <td>$quantity</td>
+                                            <td>$date</td>
+                                            <td>$remark</td>
                                         </tr>";
                                         $i++;
                                     }
@@ -75,6 +70,7 @@
             </div>
         </div>
             
+
         </div> <!-- .content -->
     </div><!-- /#right-panel -->
 

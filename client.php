@@ -8,7 +8,7 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Staff</h1>
+                        <h1>Client</h1>
                     </div>
                 </div>
             </div>
@@ -16,7 +16,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li class="active">Staff</li>
+                            <li class="active">Client</li>
                         </ol>
                     </div>
                 </div>
@@ -28,56 +28,65 @@
         <div class="card">
             <div class="card-header">
                 <?php if(isset($_GET["page_from"]) && $_GET["id"] != ""){
-                    echo "Update Staff Details";
+                    echo "Update Clients Details";
 
                 }else{
-                    echo "Add New Staff";
+                    echo "Add New Clients";
                 } ?>
             </div>
+
             <div class="card-body">
-            <form id="staff-form" method="POST" action="staff.php" >
+            <form id="client-form" method="POST">
                 <div class="form-row">
                     <div class="form-group col-sm-6">
                         <input type="hidden" id="id" name="id" >
                         <label for="inputEmail4">Name</label>
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Name" autocomplete="off">
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+
                     </div>
                     <div class="form-group col-sm-6">
                         <label for="inputPassword4">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" autocomplete="off">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+
                     </div>
                 </div>
                 <div class="form-row">
                 <div class="form-group col-sm-6">
                     <label for="inputAddress">Mobile</label>
-                    <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile" autocomplete="off">
+                    <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Mobile">
+
                 </div>
                 <div class="form-group col-sm-6">
-                    <label for="inputAddress">Password</label>
-                    <?php 
-                       if(isset($_GET["page_from"]) && $_GET["id"] != ""){?>
-                            <input type="password" class="form-control" id="update_password" name="password" placeholder="Password" readonly>
+                    <label for="inputAddress">Milk Type</label>
+                        <select class="form-control" id="milk_type" name="milk_type" required>
+                            <option value="">Select milk type</option>
 
-                      <?php } else{ ?>
-                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" autocomplete="off">
-                    <?php } ?>
+                      <?php
+                          $querys = "Select * from tbl_milk_type";
+                          $result = mysqli_query($conn, $querys);
+                          while($row = mysqli_fetch_assoc($result)){
+                            echo '<option value='.$row["id"].'>'.$row["type"].'</option>';
+                          }
+                       ?>
+                    </select>
+                    
                 </div>
             </div>
-            <div class="form-group col-sm-12">
+            <div class="form-group col-sm-12 ">
                 <label for="inputAddress2">Address</label>
-                <textarea class="form-control" id="address" name="address" rows="3" autocomplete="off"></textarea>
-            </div>
-            
+                <textarea class="form-control" id="address" name="address" rows="3"></textarea>
 
-            <?php if(isset($_GET["page_from"]) && $_GET["page_from"] == "update"){ ?>
-                <input type="submit" class="btn btn-primary" name="update_staff" value="Update">
+            </div>
+
+            <?php if(isset($_GET["page_from"]) && isset($_GET["page_from"]) == "update"){ ?>
+                <input type="submit" class="btn btn-primary" name="update_client" value="Update" id = "update">
 
                <?php }else{
                     ?>
-                    <input type="submit" class="btn btn-primary" name="add_staff" value="Add Staff">
+                    <input type="submit" class="btn btn-primary" name="add_client" value="Add Clients" id="add">
 
                <?php } ?>
-            <input type="button" class="btn btn-primary" name="clear_staff" value="Clear">
+            <input type="button" class="btn btn-primary" name="clear_client" value="Clear">
         </form>
         </div>
         </div>
@@ -91,25 +100,25 @@
     <?php 
         if(isset($_GET["page_from"]) && $_GET["id"] != ""){
             $id = $_GET['id'];
-            $query = "select * from tbl_staff where id=$id";
+            $query = "select * from tbl_client where id=$id";
 
             if($result = mysqli_query($conn, $query)){
                 if(mysqli_num_rows($result) > 0){
                     while($row = mysqli_fetch_assoc($result)){
                         $name = $row["name"];
-                        $email = $row["email"];
                         $mobile = $row["mobile"];
+                        $email = $row["email"];
                         $address = $row["address"];
-                        $password = $row["password"];
+                        $milk_type = $row["milk_type"];
                     }
 
                     echo "<script>
                             $('#id').val('$id');
                             $('#name').val('$name');
-                            $('#email').val('$email');
                             $('#mobile').val('$mobile');
+                            $('#email').val('$email');
                             $('#address').val('$address');
-                            $('#update_password').val('$password');
+                            $('#milk_type').val('$milk_type');
                         </script>";
                 }
             }
@@ -123,8 +132,9 @@
 
 ?>
 
+
   <!-- Jquery Validate -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>  
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js" integrity="sha512-UdIMMlVx0HEynClOIFSyOrPggomfhBKJE28LKl8yR3ghkgugPnG6iLfRfHwushZl1MOPSY6TsuBDGPK2X4zYKg==" crossorigin="anonymous"></script>
 
@@ -138,7 +148,7 @@
 
 <script>
     $(document).ready(function(){
-        $("#staff-form").validate({
+        $("#client-form").validate({
 
                 rules:{
 
@@ -149,10 +159,7 @@
                         required : true,
                         email : true ,
                     },
-                    password :{
-                        required : true,
-                        minlength : 5
-                    },
+                   
                     mobile:{
                         required :true,
                         minlength:10,
@@ -163,10 +170,7 @@
 
                 },
                 messages:{
-                    password :{
-                        required :"Please , enter your password",
-                        minlength :"Password must be 5 character long"
-                    },
+                   
                     mobile:{
                         required : "Enter valid mobile number",
                     },
@@ -187,40 +191,39 @@
     });
 </script>
 
-      
+
 <?php
 
-    if(isset($_POST['add_staff'])){
+    if(isset($_POST['add_client'])){
         $name = $_POST["name"];
-        $email = $_POST["email"];
         $mobile = $_POST["mobile"];
+        $email = $_POST["email"];
         $address = $_POST["address"];
-        $password = $_POST["password"];
+        $milk_type = $_POST["milk_type"];
 
-        $query = "insert into tbl_staff (password, name, email, mobile, address) values('$password', '$name', '$email', '$mobile', '$address')";
+        $query = "insert into tbl_client (name,mobile, email,address,milk_type) values('$name', '$mobile', '$email', '$address',$milk_type)";
         mysqli_query($conn, $query);
-        header("Location: view-staff.php", true, 301);
+        header("Location: view-client.php", true, 301);
         exit();
 
     }
     
-    if(isset($_POST['update_staff']) && $_POST['id'] != ""){
+    if(isset($_POST['update_client']) && $_POST['id'] != ""){
         $id = $_POST["id"];
         $name = $_POST["name"];
-        $email = $_POST["email"];
         $mobile = $_POST["mobile"];
+        $email = $_POST["email"];
         $address = $_POST["address"];
+        $milk_type = $_POST["milk_type"];
 
-        $query = "update tbl_staff set name='$name', mobile='$mobile', email='$email', address='$address' where id=$id";
+        $query = "update tbl_client set name ='$name', mobile ='$mobile', email ='$email', address ='$address' , milk_type = '$milk_type' where id = $id";
         mysqli_query($conn, $query);
-        header("Location: view-staff.php", true, 301);
+        header("Location: view-client.php", true, 301);
         exit();
     
     }
     ob_end_flush();
 
+
 ?>
-
-
-
 

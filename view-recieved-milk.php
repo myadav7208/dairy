@@ -7,7 +7,7 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Staff</h1>
+                        <h1>Dashboard</h1>
                     </div>
                 </div>
             </div>
@@ -15,7 +15,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li class="active">Staff</li>
+                            <li class="active">Dashboard</li>
                         </ol>
                     </div>
                 </div>
@@ -26,7 +26,7 @@
 
         <div class="card">
             <div class="card-header">
-                Staff List
+                Recieved Milk
             </div>
             <div class="card-body">
             <div class="table-responsive">
@@ -35,34 +35,33 @@
                         <tr>
                             <th scope="col">#</th>
                             <th scope="col">Actions</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Address</th>
+                            <th scope="col">Date Time</th>
+                            <th scope="col">Provider</th>
+                            <th scope="col">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
-                            $query = "select * from tbl_staff";
+                            $query = "select trm.quantity quant, trm.date_time dt, trm.id id, tmp.name name, tmp.id tmp_id from tbl_recieved_milk trm, tbl_milk_provider tmp where trm.milk_provider_id = tmp.id";
                             $i = 1;
 
                             if($result = mysqli_query($conn, $query)){
                                 if(mysqli_num_rows($result) > 0){
                                     while($row = mysqli_fetch_assoc($result)){
-                                        $id = $row['id'];
+                                        $date_time = $row['dt'];
                                         $name = $row['name'];
-                                        $email = $row['email'];
-                                        $mobile = $row['mobile'];
-                                        $address = $row['address'];
+                                        $quantity = $row['quant'];
+                                        $trm_id = $row["id"];
+                                        $tmp_id = $row["tmp_id"];
+
                                         echo "<tr>
                                             <th scope='row'>$i</th>
-                                            <td><a href='staff.php?page_from=update&id=$id'><i class='fa fa-pencil' aria-hidden='true' style='margin-left:5px;color:green'></i></a>
-                                                <a href='delete.php?page_from=staff&id=$id' ><i class='fa fa-trash' aria-hidden='true' style='margin-left:10px; color:red'></i></a>
+                                            <td><a href='recieved-milk.php?page_from=update&trm_id=$trm_id'><i class='fa fa-pencil' aria-hidden='true' style='margin-left:5px;color:green'></i></a>
+                                                <a href='delete.php?page_from=recieved_milk&trm_id=$trm_id&quantity=$quantity&tmp_id=$tmp_id' ><i class='fa fa-trash' aria-hidden='true' style='margin-left:10px; color:red'></i></a>
                                             </td>
+                                            <td>$date_time</td>
                                             <td>$name</td>
-                                            <td>$mobile</td>
-                                            <td>$email</td>
-                                            <td>$address</td>
+                                            <td>$quantity</td>
                                         </tr>";
                                         $i++;
                                     }
@@ -75,6 +74,7 @@
             </div>
         </div>
             
+
         </div> <!-- .content -->
     </div><!-- /#right-panel -->
 
