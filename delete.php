@@ -20,7 +20,7 @@ if($_GET["page_from"] == "milk_provider" && $_GET["id"] != ""){
     $id = $_GET["id"];
     $query = "delete from tbl_milk_provider where id=$id";
     mysqli_query($conn, $query);
-    header("Location: view-milk_provider.php");
+    header("Location: view-milk-provider.php");
     exit();
 }
 
@@ -28,7 +28,7 @@ if($_GET["page_from"] == "milk_type" && $_GET["id"] != ""){
     $id = $_GET["id"];
     $query = "delete from tbl_milk_type where id=$id";
     mysqli_query($conn, $query);
-    header("Location: view-milk_type.php");
+    header("Location: view-milk-type.php");
     exit();
 }
 
@@ -37,7 +37,7 @@ if($_GET["page_from"] == "staff_salary" && $_GET["id"] != ""){
     $id = $_GET["id"];
     $query = "delete from tbl_staff_salary where id=$id";
     mysqli_query($conn, $query);
-    header("Location: view-staff_salary.php");
+    header("Location: view-staff-salary.php");
     exit();
 }
 
@@ -54,7 +54,7 @@ if($_GET["page_from"] == "milk_loss" && $_GET["id"] != ""){
     $id = $_GET["id"];
     $query = "delete from tbl_milk_loss where id=$id";
     mysqli_query($conn, $query);
-    header("Location: view-milk_loss.php");
+    header("Location: view-milk-loss.php");
     exit();
 }
 

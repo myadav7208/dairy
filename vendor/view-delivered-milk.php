@@ -1,9 +1,9 @@
-<?php 
+<?php  
     session_start();
     if(!(isset($_SESSION["username"])) && !(isset($_SESSION["id"]))){
         header("Location: index.php" );
-    }  
-    include "include/db_connection.php";
+    } 
+    include "../include/db_connection.php";
     include "include/header.php";
 ?>
 
@@ -11,7 +11,7 @@
             <div class="col-sm-4">
                 <div class="page-header float-left">
                     <div class="page-title">
-                        <h1>Staff</h1>
+                        <h1>Dashboard</h1>
                     </div>
                 </div>
             </div>
@@ -19,7 +19,7 @@
                 <div class="page-header float-right">
                     <div class="page-title">
                         <ol class="breadcrumb text-right">
-                            <li class="active">Staff</li>
+                            <li class="active">Dashboard</li>
                         </ol>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
 
         <div class="card">
             <div class="card-header">
-                Staff List
+                Delivered Milk
             </div>
             <div class="card-body">
             <div class="table-responsive">
@@ -38,35 +38,32 @@
                     <thead>
                         <tr>
                             <th scope="col">#</th>
-                            <th scope="col">Actions</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Mobile</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Address</th>
+                            <th scope="col">Date </th>
+                            <th scope="col">Client</th>
+                            <th scope="col">Quantity</th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php 
-                            $query = "select * from tbl_staff";
+                            $staff_id = $_SESSION["id"];
+                    
+                            $query = "select tmd.quantity quant, tmd.date_time dt, tmd.id id, tc.name name, tc.id tc_id from tbl_milk_delivered tmd, tbl_client tc where tmd.client_id = tc.id and tmd.staff_id=$staff_id";
                             $i = 1;
 
                             if($result = mysqli_query($conn, $query)){
                                 if(mysqli_num_rows($result) > 0){
                                     while($row = mysqli_fetch_assoc($result)){
-                                        $id = $row['id'];
+                                        $date_time = $row['dt'];
                                         $name = $row['name'];
-                                        $email = $row['email'];
-                                        $mobile = $row['mobile'];
-                                        $address = $row['address'];
+                                        $quantity = $row['quant'];
+                                        $tmd_id = $row["id"];
+                                        $tc_id = $row["tc_id"];
+
                                         echo "<tr>
                                             <th scope='row'>$i</th>
-                                            <td><a href='staff.php?page_from=update&id=$id'><i class='fa fa-pencil' aria-hidden='true' style='margin-left:5px;color:green'></i></a>
-                                                <a href='delete.php?page_from=staff&id=$id' ><i class='fa fa-trash' aria-hidden='true' style='margin-left:10px; color:red'></i></a>
-                                            </td>
+                                            <td>$date_time</td>
                                             <td>$name</td>
-                                            <td>$mobile</td>
-                                            <td>$email</td>
-                                            <td>$address</td>
+                                            <td>$quantity</td>
                                         </tr>";
                                         $i++;
                                     }
@@ -79,8 +76,9 @@
             </div>
         </div>
             
+
         </div> <!-- .content -->
-      
+        
         <div class="container footer">
         <div class="row">
             <div class="col-sm-3"></div>
@@ -104,5 +102,6 @@
         var staff_table = $("#staff-table").DataTable({
             
         });
+
     });
 </script>

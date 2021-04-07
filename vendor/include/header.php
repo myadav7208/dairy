@@ -1,12 +1,8 @@
 
 
+
 <!doctype html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
-<!--[if gt IE 8]><!-->
 <html class="no-js" lang="en">
-<!--<![endif]-->
 
 <head>
     <meta charset="utf-8">
@@ -18,27 +14,26 @@
     <link rel="apple-touch-icon" href="apple-icon.png">
     <link rel="shortcut icon" href="favicon.ico">
 
-    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="vendors/themify-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="vendors/flag-icon-css/css/flag-icon.min.css">
-    <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css">
-    <link rel="stylesheet" href="assets/css/custom.css">
+    <link rel="stylesheet" href="../vendors/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../vendors/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../vendors/themify-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="../vendors/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="../vendors/selectFX/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="../assets/css/custom.css">
 
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <!-- <script src="vendors/jquery/dist/jquery.min.js"></script> -->
+    <script src="../vendors/jquery/dist/jquery.min.js"></script>
 
 </head>
-
 <body>
-<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css"> -->
+
 
     <?php include "sidebar.php"; ?>
 
@@ -60,17 +55,21 @@
                 <div class="col-sm-5">
                     <div class="user-area dropdown float-right">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="user-avatar rounded-circle" src="images/avatar/new.jpeg" alt="User Avatar">
+                            <img class="user-avatar rounded-circle" src="new.jpeg" alt="User Avatar">
                         </a>
 
                         <div class="user-menu dropdown-menu">
 
-                            <a class="nav-link" href="logout.php"><i class="fa fa-power-off"></i> Logout</a>
+                            <a class="nav-link" href="./logout.php"><i class="fa fa-power-off"></i> Logout</a>
                         </div>
                     </div>
 
-                    <div class="language-select dropdown" id="language-select">
-                    <span style="color:#000"><?php echo $_SESSION["username"]; ?></span>
+                    <div class="language-select mt-0" id="language-select">
+                       
+                            <span style="color:#000"><?php echo $_SESSION["username"]; ?></span>
+
+                        
+                       
                     </div>
 
                 </div>

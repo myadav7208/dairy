@@ -7,7 +7,10 @@
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-menu" aria-controls="main-menu" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="./"><img src="images/logo.png" alt="Logo"></a>
+                <a class="navbar-brand" href="./">
+                <!-- <img src="images/logo.png" alt="Logo">-->
+                    <span>SabhaRaj Dhudhalay</span>
+                </a> 
                 <a class="navbar-brand hidden" href="./"><img src="images/logo2.png" alt="Logo"></a>
             </div>
 
@@ -21,9 +24,9 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-users"></i>Staff</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-user-plus"></i><a href="staff.php">Add New Staff</a></li>
-                            <li><i class="fa fa-arrows-h"></i><a href="assign-client.php">Assign Client</a></li>
+                            <!-- <li><i class="fa fa-arrows-h"></i><a href="assign-client.php">Assign Client</a></li> -->
                             <li><i class="fa fa-eye"></i><a href="view-staff.php">Staff List</a></li>
-                            <li><i class="fa fa-eye"></i><a href="view-assigned-client.php">Assigned List</a></li>
+                            <!-- <li><i class="fa fa-eye"></i><a href="view-assigned-client.php">Assigned List</a></li> -->
                         </ul>
                     </li>
                     <li class="menu-item-has-children dropdown">
@@ -41,13 +44,20 @@
                         </ul>
                     </li>
                     <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-table"></i>Milk Type</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-table"></i>Product Type</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-plus"></i><a href="milk-type.php">Add New Type</a></li>
                             <li><i class="fa fa-eye"></i><a href="view-milk-type.php">View All Types</a></li>
                         </ul>
                     </li>
                     <h3 class="menu-title">Daily Milk</h3>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-arrow-right"></i>Handover Milk</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="menu-icon fa fa-plus"></i><a href="handover-milk.php">Add</a></li>
+                            <li><i class="menu-icon fa fa-table"></i><a href="view-handover-milk.php">View</a></li>
+                        </ul>
+                    </li>
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-arrow-right"></i>Recieved Milk</a>
                         <ul class="sub-menu children dropdown-menu">

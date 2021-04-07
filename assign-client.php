@@ -1,4 +1,8 @@
-<?php  
+<?php
+    session_start();
+    if(!(isset($_SESSION["username"])) && !(isset($_SESSION["id"]))){
+        header("Location: index.php" );
+    }   
     ob_start();
     include "include/db_connection.php";
     include "include/header.php";
@@ -23,7 +27,7 @@
             </div>
         </div>
 
-        <div class="content mt-3">
+        <div class="content mt-3" style="margin-bottom:30px;">
 
         <div class="card">
             <div class="card-header">
@@ -84,8 +88,17 @@
         </div>
         </div>
             
-
         </div> <!-- .content -->
+        
+        <div class="container footer">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <span ><strong>Copyright &copy; 2020-2021 <a href="http://clpinfotech.com/" target="_blank">CLP INFOTECH PVT LTD</a>.</strong></span>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+    </div>
     </div><!-- /#right-panel -->
 
     <!-- Right Panel -->

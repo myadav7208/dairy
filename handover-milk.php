@@ -1,27 +1,10 @@
-<?php  
+<?php 
     session_start();
     if(!(isset($_SESSION["username"])) && !(isset($_SESSION["id"]))){
         header("Location: index.php" );
-    } 
+    }  
     ob_start();
     include "include/db_connection.php";
-
-    if(isset($_POST["order_clientid"]) && $_POST["order_clientid"] != ""){
-        $order_clientid = $_POST["order_clientid"];
-        $result = mysqli_query($conn, "select * from tbl_order where client_id = $order_clientid");
-        $data = array();
-        if($result){
-            while($row = mysqli_fetch_assoc($result)){
-                $data["quantity"] = $row["quantity"];
-                $data["remark"] = $row["remark"];
-                $data["fill_date"] = $row["order_fill_date"];
-            }
-            echo json_encode($data);
-            exit();
-        }
-        
-    }
-
     include "include/header.php";
 ?>
 <style>
@@ -60,32 +43,33 @@
         <div class="card">
             <div class="card-header">
                 <?php if(isset($_GET["page_from"]) && $_GET["tmd_id"] != ""){
-                    echo "Update Delivered Milk Details";
+                    echo "Update Handover Milk Details";
 
                 }else{
-                    echo "Add New Delivered Milk Details";
+                    echo "Add New Handover Milk Details";
                 } ?>
             </div>
             <div class="card-body">
-            <form id="delivered-milk-form" method="POST">
+            <form id="handover-milk-form" method="POST">
+                <input type="hidden" name="id" value="<?php echo $_GET['tmd_id']; ?>">
                 <div class="form-row">
                     <div class="form-group col-sm-6">
                         <input type="hidden" id="id1" name="id1" >
                         <input type="hidden" id="old_quantity" name="old_quantity" >
                         <label for="inputEmail4">Name</label>
                         <select class="form-control" id="name" name="name" required>
-                            <option value="">Select Client</option>
+                            <option value="">Select Staff</option>
                             <?php
-                                $query = "select * from tbl_client";
+                                $query = "select * from tbl_staff";
                             
                                 if($result = mysqli_query($conn, $query)){
                                     if(mysqli_num_rows($result) > 0){
                                         while($row = mysqli_fetch_assoc($result))
                                         {
-                                            $mid = $row["id"];
+                                            $sid = $row["id"];
                                             $name = $row["name"];
                                             $mobile = $row["mobile"];
-                                            echo "<option value='$mid'>".$name." (".$mobile.") "."</option>";
+                                            echo "<option value='$sid'>".$name." (".$mobile." ) "."</option>";
                                         }
                                     }
                                 }
@@ -117,16 +101,16 @@
             <div class="form-row">
             <?php if(isset($_GET["page_from"]) && isset($_GET["page_from"]) == "update"){ ?>
                 <div class="form-group col-sm-2">
-                    <button type="submit" class="btn btn-primary" name="update_recieved_milk">Update</button>
+                    <button type="submit" class="btn btn-primary" name="update_handover_milk">Update</button>
                 </div>
                <?php }else{
                     ?>
                     <div class="form-group col-sm-2">
-                        <button type="submit" class="btn btn-primary" name="add_recieved_milk">Add Delivered Milk</button>
+                        <button type="submit" class="btn btn-primary" name="add_handover_milk">Add Handover Milk</button>
                     </div>
-                    <div class="form-group col-sm-2">
+                    <!-- <div class="form-group col-sm-2">
                         <button type="button" class="btn btn-info" id="scan_qr_code" name="scan" >Scan QR Code</button>
-                    </div>
+                    </div> -->
                <?php } ?>
             <div class="form-group col-sm-2">
                 <button type="submit" class="btn btn-secondary" name="clear_recieved_milk" >Clear</button>
@@ -136,7 +120,7 @@
         </div>
         </div>
         </div> <!-- .content -->
-      
+       
         <div class="container footer">
         <div class="row">
             <div class="col-sm-3"></div>
@@ -153,15 +137,15 @@
     <?php 
         if(isset($_GET["page_from"]) && ($_GET["page_from"] == "update") && $_GET["tmd_id"] != ""){
             $id = $_GET['tmd_id'];
-            $query = "select * from tbl_milk_delivered where id=$id";
+            $query = "select * from tbl_milk_handover where id=$id";
 
             if($result = mysqli_query($conn, $query)){
                 if(mysqli_num_rows($result) > 0){
                     while($row = mysqli_fetch_assoc($result)){
                         $idd = $row["id"];
-                        $name = $row["client_id"];
+                        $name = $row["staff_id"];
                         $quantity = $row["quantity"];
-                        $datetime = $row["date_time"];
+                        $datetime = $row["date"];
                         $remark = $row["remark"];
                     }
                 
@@ -228,12 +212,15 @@ color:red;
 
 <script>
 jQuery(document).ready(function($){
-    $('.whatsapp').draggable();
-    $("#delivered-milk-form").validate({
+    // $('.whatsapp').draggable();
+    $("#handover-milk-form").validate({
 
             rules:{
 
                 quantity:{
+                    required:true,
+                },
+                name:{
                     required:true,
                 },
                 datetime:{
@@ -333,97 +320,37 @@ function fillValueAfterScan(id){
 
 <?php
 
-    if(isset($_POST['add_recieved_milk'])){
+    if(isset($_POST['add_handover_milk'])){
         $id = $_POST["name"];
         $quantity = $_POST["quantity"];
         $datetime = $_POST["datetime"];
         $remark = $_POST["remark"];
 
 
-        $query = "insert into tbl_milk_delivered (client_id, quantity, date_time, remark) values('$id', '$quantity', '$datetime', '$remark')";
+        $query = "insert into tbl_milk_handover (staff_id, quantity, date, remark) values('$id', '$quantity', '$datetime', '$remark')";
         mysqli_query($conn, $query);
 
-        $result = mysqli_query($conn, "select rate from tbl_client where id = $id");
-        if($result){
-            while($row = mysqli_fetch_assoc($result)){
-                $rate = $row["rate"];
-            }
-            $result2 = mysqli_query($conn, "select total_amount from tbl_total_client_amount where client_id = $id");
-            if(mysqli_num_rows($result2) < 1){
-                $amount = $rate * $quantity;
-                mysqli_query($conn, "insert into tbl_total_client_amount (client_id, total_amount) values ($id, $amount)");
-            }else{
-                while($row2 = mysqli_fetch_assoc($result2)){
-                    $last_amount = $row2["total_amount"];
-                    $amount = $last_amount + ($rate * $quantity);
-                    mysqli_query($conn, "update tbl_total_client_amount set total_amount = $amount where client_id = $id");
-
-                }
-            }
-
-        }
-
-        header("Location: view-delivered-milk.php", true, 301);
+        header("Location: view-handover-milk.php", true, 301);
         exit();
 
     }
     
-    if(isset($_POST['update_recieved_milk'])){
+    if(isset($_POST['update_handover_milk'])){
         $id = $_POST["name"];
-        $tmd_id = $_POST['id1'];
-        $old_quantity = $_POST["old_quantity"];
+        $tmd_id = $_POST['id'];
         $quantity = $_POST["quantity"];
         $datetime1 = $_POST["datetime"];
+        $remark = $_POST["remark"];
     
-        $result_update1 = mysqli_query($conn, "select total_amount from tbl_total_client_amount where client_id = $id");
-        if($result_update1){
-            while($row_up1 = mysqli_fetch_assoc($result_update1)){
-                $tamount = $row_up1["total_amount"];
-            }
-        
-            $result_update2 = mysqli_query($conn, "select * from tbl_client where id = $id");
-            if($result_update2){
-                while($row = mysqli_fetch_assoc($result_update2)){
-                    $rate = $row["rate"];
-                }
-            }
-            
-            $tamount1 = $tamount - ($old_quantity * $rate);
-            $tamount2 = $tamount1 + ($quantity * $rate);
+
            
-            mysqli_query($conn, "update tbl_milk_delivered set quantity = $quantity, date_time = '$datetime1', remark = '$remark' where id = $tmd_id");
-            mysqli_query($conn, "update tbl_total_client_amount set total_amount = $tamount2 where client_id = $id");  
+            mysqli_query($conn, "update tbl_milk_handover set quantity = $quantity, date = '$datetime1', remark = '$remark', staff_id=$id where id = $tmd_id");
+            // mysqli_query($conn, "update tbl_total_client_amount set total_amount = $tamount2 where client_id = $id");  
+            header("Location: view-handover-milk.php", true, 301);
+            exit();
         }
-        header("Location: view-delivered-milk.php", true, 301);
-        exit();
     
-    }
     ob_end_flush();
 
 ?>
 
-<script>
-    jQuery(document).ready(function($){
-        $("#name").change(function(){
-            var client_id = $("#name").val();
-            
-            $.ajax({
-                url:"delivered-milk.php",
-                method:"POST",
-                dataType:"json",
-                data:{order_clientid:client_id},
-                success:function(response){
-                    console.log(Object.keys(response).length);
-                    if(Object.keys(response).length > 0){
-                        $("#order").text(response.quantity);
-                        $("#order").show();
-                    }
-                    else{
-                        $("#order").hide();
-                    }
-                }
-            });
-        });
-    });
-
-</script>

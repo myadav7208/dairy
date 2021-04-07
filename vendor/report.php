@@ -1,10 +1,12 @@
 <?php  
-    session_start();
-    if(!(isset($_SESSION["username"])) && !(isset($_SESSION["id"]))){
+session_start(); 
+if(!(isset($_SESSION["username"])) && !(isset($_SESSION["id"]))){
         header("Location: index.php" );
     } 
-    include "include/db_connection.php";
+    ob_start();
+    include("../include/db_connection.php");
     include "include/header.php";
+
 ?>
 
         <div class="breadcrumbs">
@@ -30,7 +32,7 @@
 
         <div class="card">
             <div class="card-header">
-                Recieved Milk Report
+                Delivered Milk Report
             </div>
             <div class="card-body">
 
@@ -45,26 +47,6 @@
                         <label for="inputPassword4">To Date</label>
                         <input type="date" class="form-control" id="todate" name="todate" >
                     </div>
-                    <div class="form-group col-sm-6">
-                        <select name="delivry_name" class="form-control">
-                            <option>Select name</option>
-                            <?php 
-                                $result  = mysqli_query($conn, "select * from tbl_milk_provider");
-                                if($result){
-                                    while($row = mysqli_fetch_assoc($result)){
-                                        $id = $row["id"];
-                                        $name = $row["name"];
-                                        $mobile = $row["mobile"];
-                                        echo "<option value='$id'>".$name."( ".$mobile." )"."</option>";
-                                    }
-                                }
-                            ?>
-                        </select>
-                        <?php
-                            echo "<input type='hidden' name='name_inp' value='$name'>";
-                        ?>
-                        
-                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary" name="submit">Submit</button>
         </form>
@@ -73,7 +55,8 @@
             if(isset($_POST["submit"])){
                 $from_date = $_POST['fromdate'];
                 $todate = $_POST['todate'];
-                $dm_id = $_POST["delivry_name"];
+                $dm_id = $_SESSION["id"];
+
             
                 $from_date2 = $from_date;
                 $todate2 = $todate;
@@ -84,8 +67,8 @@
                 <table class="table table-bordered text-center " id="staff-table" >
                     <thead>
                         <tr>
-                            <th scope='col' style='width:130px;background-color:#ff969d;'>Date</th>
-                            <th scope='col' style='width:130px;background-color:#ff969d;'><?php echo $name; ?></th>
+                            <th scope='col' style='width:130px;'>Date</th>
+                            <th scope='col' style='width:130px;'><?php echo $_SESSION["username"]; ?></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,14 +93,14 @@
                             while (strtotime($from_date) <= strtotime($todate)) {
                                 $new_row = "<tr>";
                                 $new_td = "";
-                                $new_td  .= "<td style='background-color:#a3b4c2'>$from_date</td>";
+                                $new_td  .= "<td >$from_date</td>";
                                 if(in_array($from_date, $date_arr)){
-                                    $new_td .= "<td style='width:130px;background-color:#fff'> $quantity_arr[$from_date] <br/>
+                                    $new_td .= "<td style='width:130px;'> $quantity_arr[$from_date] <br/>
                                     $amount_arr[$from_date]            
                                                     </td>";
                                 } else{
      
-                                $new_td .= "<td style='width:130px;background-color:#f7f697;'>Quantity : 0<br/>
+                                $new_td .= "<td style='width:130px;'>Quantity : 0<br/>
                                                 Amount :  0            
                                              </td>"; 
                                 }
@@ -134,7 +117,7 @@
                     <tfoot>
                         
                             <tr>
-                            <td style='background-color:#ff969d;font-weight:bold'>Total</td>
+                            <td style='font-weight:bold'>Total</td>
                             <?php
                         
                                 $query3 = "select sum(trm.quantity)*tmp.rate tamount, sum(trm.quantity) total_quantity from tbl_recieved_milk trm left join tbl_milk_provider tmp on trm.milk_provider_id = tmp.id where trm.milk_provider_id=$dm_id and DATE_FORMAT(cast(trm.date_time as date), '%Y-%m-%d') BETWEEN '$from_date2' and '$todate2'";
@@ -144,11 +127,11 @@
                                         $tquantity = $row3["total_quantity"];
                                         $amount = $row3["tamount"];
                                         if($tquantity){
-                                            echo "<td style='width:130px;background-color:#ff969d;font-weight:bold'>Quantity : $tquantity<br/>
+                                            echo "<td style='width:130px;font-weight:bold'>Quantity : $tquantity<br/>
                                             Amount :  $amount           
                                         </td>";
                                         }else{
-                                            echo "<td style='width:130px;background-color:#ff969d;font-weight:bold'> Total Quantity : 0 <br/>
+                                            echo "<td style='width:130px;font-weight:bold'> Total Quantity : 0 <br/>
                                             Total Amount : 0            
                                         </td>"; 
                                         }

@@ -1,17 +1,22 @@
 <?php
   session_start();
 
-  include "include/db_connection.php";
+  include "../include/db_connection.php";
 
   if(isset($_POST['Signin'])){
     
     $mobile = $_POST['mobile'];
     $password = $_POST['password'];
-    
+    $type = $_POST['radio_options'];
 
 
-        $result = mysqli_query($conn, "select * from tbl_admin where mobile='$mobile' and password = '$password'");
-    
+    if($type[0] == "client"){
+        $result = mysqli_query($conn, "select * from tbl_client where mobile='$mobile' and password = '$password'");
+    }else if($type[0] == "milk_provider"){
+        $result = mysqli_query($conn, "select * from tbl_milk_provider where mobile='$mobile' and password = '$password'");
+    }else if($type[0] == "staff"){
+        $result = mysqli_query($conn, "select * from tbl_staff where mobile='$mobile' and password = '$password'");
+    }
 
     // $query = "select * from user_type where email='$email' and password ='$password'";
     
@@ -20,6 +25,7 @@
     }else{
 
         while($row = mysqli_fetch_array($result)){
+            $_SESSION["user_type"] = $type;
             $_SESSION["username"] = $row["name"];
             $_SESSION["id"] = $row["id"];
 
@@ -51,13 +57,13 @@
     <link rel="shortcut icon" href="/favicon.ico">
 
 
-    <link rel="stylesheet" href="vendors/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="vendors/themify-icons/css/themify-icons.css">
-    <link rel="stylesheet" href="vendors/flag-icon-css/css/flag-icon.min.css">
-    <link rel="stylesheet" href="vendors/selectFX/css/cs-skin-elastic.css">
+    <link rel="stylesheet" href="../vendors/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../vendors/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../vendors/themify-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="../vendors/flag-icon-css/css/flag-icon.min.css">
+    <link rel="stylesheet" href="../vendors/selectFX/css/cs-skin-elastic.css">
 
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css">
 
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800' rel='stylesheet' type='text/css'>
@@ -87,7 +93,22 @@
                             <span>Password</span>
                             <input type="password" name="password" id="password" class="form-control" placeholder="Enter Your Password">
                         </div>
-
+                        <div class="form-group " name="userType" id="userType">
+                            <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio_options[]" id="inlineRadio1" value="milk_provider">
+                            <span class="form-check-label" for="inlineRadio1">Milk Provider</span>
+                            </div>
+                            <div class="form-check form-check-inline">
+                             <input class="form-check-input" type="radio" name="radio_options[]" id="inlineRadio3" value="staff">
+                            <span class="form-check-label" for="inlineRadio1">Staff</span>
+                            </div>
+                            <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="radio_options[]" id="inlineRadio2" value="client">
+                            <span class="form-check-label" for="inlineRadio2">Client</span>
+                            </div>
+                           
+                            <label for="radio_options[]" class="error" style="display: none;"></label>
+                        </div>
                         
                         <div class="checkbox">
                             <span class="pull-right">
@@ -105,9 +126,9 @@
 
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>     
-    <script src="vendors/popper.js/dist/umd/popper.min.js"></script>
-    <script src="vendors/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="assets/js/main.js"></script>
+    <script src="../vendors/popper.js/dist/umd/popper.min.js"></script>
+    <script src="../vendors/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="../assets/js/main.js"></script>
 
    
    <!-- Jquery Validate -->
@@ -132,7 +153,9 @@
                         required : true,
                         minlength : 5
                     },
-
+                    'radio_options[]':{
+                        required : true,
+                    },
 
                 },
                 messages:{

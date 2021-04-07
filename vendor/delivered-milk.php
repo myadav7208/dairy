@@ -1,10 +1,10 @@
 <?php  
-    session_start();
+    session_start(); 
     if(!(isset($_SESSION["username"])) && !(isset($_SESSION["id"]))){
-        header("Location: index.php" );
-    } 
+            header("Location: index.php" );
+        }
     ob_start();
-    include "include/db_connection.php";
+    include "../include/db_connection.php";
 
     if(isset($_POST["order_clientid"]) && $_POST["order_clientid"] != ""){
         $order_clientid = $_POST["order_clientid"];
@@ -59,12 +59,9 @@
 
         <div class="card">
             <div class="card-header">
-                <?php if(isset($_GET["page_from"]) && $_GET["tmd_id"] != ""){
-                    echo "Update Delivered Milk Details";
-
-                }else{
-                    echo "Add New Delivered Milk Details";
-                } ?>
+               
+                    Add New Delivered Milk Details;
+                
             </div>
             <div class="card-body">
             <form id="delivered-milk-form" method="POST">
@@ -124,9 +121,9 @@
                     <div class="form-group col-sm-2">
                         <button type="submit" class="btn btn-primary" name="add_recieved_milk">Add Delivered Milk</button>
                     </div>
-                    <div class="form-group col-sm-2">
+                    <!-- <div class="form-group col-sm-2">
                         <button type="button" class="btn btn-info" id="scan_qr_code" name="scan" >Scan QR Code</button>
-                    </div>
+                    </div> -->
                <?php } ?>
             <div class="form-group col-sm-2">
                 <button type="submit" class="btn btn-secondary" name="clear_recieved_milk" >Clear</button>
@@ -151,34 +148,7 @@
     <!-- Right Panel -->
 
     <?php 
-        if(isset($_GET["page_from"]) && ($_GET["page_from"] == "update") && $_GET["tmd_id"] != ""){
-            $id = $_GET['tmd_id'];
-            $query = "select * from tbl_milk_delivered where id=$id";
 
-            if($result = mysqli_query($conn, $query)){
-                if(mysqli_num_rows($result) > 0){
-                    while($row = mysqli_fetch_assoc($result)){
-                        $idd = $row["id"];
-                        $name = $row["client_id"];
-                        $quantity = $row["quantity"];
-                        $datetime = $row["date_time"];
-                        $remark = $row["remark"];
-                    }
-                
-            
-
-                    echo "<script>
-                            $('#quantity').val('$quantity');
-                            $('#remark').val('$remark');
-                            $('#old_quantity').val('$quantity');
-                            $('#name').val('$name').attr('selected', 'selected');
-                            $('#id1').val('$idd');
-                            $('#date-time').val('$datetime');
-                        </script>";
-                }
-            }
-
-        }
 
 
 
@@ -228,7 +198,7 @@ color:red;
 
 <script>
 jQuery(document).ready(function($){
-    $('.whatsapp').draggable();
+
     $("#delivered-milk-form").validate({
 
             rules:{
@@ -338,9 +308,10 @@ function fillValueAfterScan(id){
         $quantity = $_POST["quantity"];
         $datetime = $_POST["datetime"];
         $remark = $_POST["remark"];
+        $staff_id = $_SESSION["id"];
 
 
-        $query = "insert into tbl_milk_delivered (client_id, quantity, date_time, remark) values('$id', '$quantity', '$datetime', '$remark')";
+        $query = "insert into tbl_milk_delivered (staff_id, client_id, quantity, date_time, remark) values('$staff_id', '$id', '$quantity', '$datetime', '$remark')";
         mysqli_query($conn, $query);
 
         $result = mysqli_query($conn, "select rate from tbl_client where id = $id");
@@ -368,36 +339,7 @@ function fillValueAfterScan(id){
 
     }
     
-    if(isset($_POST['update_recieved_milk'])){
-        $id = $_POST["name"];
-        $tmd_id = $_POST['id1'];
-        $old_quantity = $_POST["old_quantity"];
-        $quantity = $_POST["quantity"];
-        $datetime1 = $_POST["datetime"];
     
-        $result_update1 = mysqli_query($conn, "select total_amount from tbl_total_client_amount where client_id = $id");
-        if($result_update1){
-            while($row_up1 = mysqli_fetch_assoc($result_update1)){
-                $tamount = $row_up1["total_amount"];
-            }
-        
-            $result_update2 = mysqli_query($conn, "select * from tbl_client where id = $id");
-            if($result_update2){
-                while($row = mysqli_fetch_assoc($result_update2)){
-                    $rate = $row["rate"];
-                }
-            }
-            
-            $tamount1 = $tamount - ($old_quantity * $rate);
-            $tamount2 = $tamount1 + ($quantity * $rate);
-           
-            mysqli_query($conn, "update tbl_milk_delivered set quantity = $quantity, date_time = '$datetime1', remark = '$remark' where id = $tmd_id");
-            mysqli_query($conn, "update tbl_total_client_amount set total_amount = $tamount2 where client_id = $id");  
-        }
-        header("Location: view-delivered-milk.php", true, 301);
-        exit();
-    
-    }
     ob_end_flush();
 
 ?>

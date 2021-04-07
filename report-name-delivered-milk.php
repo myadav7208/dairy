@@ -1,4 +1,8 @@
 <?php  
+    session_start();
+    if(!(isset($_SESSION["username"])) && !(isset($_SESSION["id"]))){
+        header("Location: index.php" );
+    } 
     include "include/db_connection.php";
     include "include/header.php";
 ?>
@@ -22,7 +26,7 @@
             </div>
         </div>
 
-        <div class="content mt-3">
+        <div class="content mt-3" style="margin-bottom:30px;">
 
         <div class="card">
             <div class="card-header">
@@ -50,7 +54,8 @@
                                     while($row = mysqli_fetch_assoc($result)){
                                         $id = $row["id"];
                                         $name = $row["name"];
-                                        echo "<option value='$id'>$name</option>";
+                                        $mobile = $row["mobile"];
+                                        echo "<option value='$id'>".$name."( ".$mobile." )"."</option>";
                                     }
                                 }
                             ?>
@@ -78,10 +83,13 @@
             <div class="table-responsive" >
                 <table class="table table-bordered text-center " id="staff-table" >
                     <thead>
-                        <tr>
-                            <th scope='col' style='width:130px;background-color:#ff969d;'>Date</th>
-                            <th scope='col' style='width:130px;background-color:#ff969d;'><?php echo $name; ?></th>
+                        <tr><th colspan=3><?php echo $name; ?></th></tr>
+                        <tr >
+                            <th scope='col' style='width:130px;'>Date</th>
+                            <th scope='col' style='width:130px;'>Quantity</th>
+                            <th scope='col' style='width:130px;'>Amount</th>
                         </tr>
+                     
                     </thead>
                     <tbody>
                         <?php 
@@ -105,15 +113,15 @@
                             while (strtotime($from_date) <= strtotime($todate)) {
                                 $new_row = "<tr>";
                                 $new_td = "";
-                                $new_td  .= "<td style='background-color:#a3b4c2'>$from_date</td>";
+                                $new_td  .= "<td >$from_date</td>";
                                 if(in_array($from_date, $date_arr)){
-                                    $new_td .= "<td style='width:130px;background-color:#fff'> $quantity_arr[$from_date] <br/>
-                                    $amount_arr[$from_date]            
+                                    $new_td .= "<td style='width:130px;'>$quantity_arr[$from_date]</td>
+                                    <td>$amount_arr[$from_date]            
                                                     </td>";
                                 } else{
      
-                                $new_td .= "<td style='width:130px;background-color:#f7f697;'>Quantity : 0<br/>
-                                                Amount :  0            
+                                $new_td .= "<td style='width:130px;'>0</td>
+                                            <td>0         
                                              </td>"; 
                                 }
                                              
@@ -129,7 +137,7 @@
                     <tfoot>
                         
                             <tr>
-                            <td style='background-color:#ff969d;font-weight:bold'>Total</td>
+                            <td style='font-weight:bold'>Total</td>
                             <?php
                         
                                 $query3 = "select sum(tmd.quantity)*tc.rate tamount, sum(tmd.quantity) total_quantity from tbl_milk_delivered tmd left join tbl_client tc on tmd.client_id = tc.id where tmd.client_id=$dm_id and DATE_FORMAT(cast(tmd.date_time as date), '%Y-%m-%d') BETWEEN '$from_date2' and '$todate2'";
@@ -139,12 +147,12 @@
                                         $tquantity = $row3["total_quantity"];
                                         $amount = $row3["tamount"];
                                         if($tquantity){
-                                            echo "<td style='width:130px;background-color:#ff969d;font-weight:bold'>Quantity : $tquantity<br/>
-                                            Amount :  $amount           
+                                            echo "<td style='width:130px;font-weight:bold'>$tquantity</td>
+                                            <td>$amount           
                                         </td>";
                                         }else{
-                                            echo "<td style='width:130px;background-color:#ff969d;font-weight:bold'> Total Quantity : 0 <br/>
-                                            Total Amount : 0            
+                                            echo "<td style='width:130px;font-weight:bold'>0 </td>
+                                            <td> 0            
                                         </td>"; 
                                         }
                                     
@@ -164,6 +172,16 @@
             
 
         </div> <!-- .content -->
+        
+        <div class="container footer">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <span ><strong>Copyright &copy; 2020-2021 <a href="http://clpinfotech.com/" target="_blank">CLP INFOTECH PVT LTD</a>.</strong></span>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+    </div>
     </div><!-- /#right-panel -->
 
     <!-- Right Panel -->
@@ -191,11 +209,14 @@
     }
         var staff_table = $("#staff-table").DataTable({
             dom: 'fBrtip',
-            buttons: [{
-                extend: 'print',
-                footer: true
-            }]
-        });
+            lengthChange: true,
+            //responsive: false,
+            buttons: ['copy', 'excel', 'pdf', 'print',{
+                extend: 'pdfHtml5',
+                orientation: 'landscape',
+                pageSize: 'LEGAL' }]
+           
 
     });
+});
 </script>

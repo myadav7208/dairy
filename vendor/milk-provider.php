@@ -1,11 +1,14 @@
 <?php 
-    session_start();
-    if(!(isset($_SESSION["username"])) && !(isset($_SESSION["id"]))){
-        header("Location: index.php" );
-    }  
-    ob_start();
-    include "include/db_connection.php";
-    include "include/header.php";
+ ob_start();
+  include("../include/db_connection.php");
+  session_start();
+  // if(!isset($_SESSION["emails"])){
+  //   header("Location: index.php" );
+  // }
+
+      include "include/header.php";
+
+ 
 ?>
 
         <div class="breadcrumbs">
@@ -27,16 +30,13 @@
             </div>
         </div>
 
-        <div class="content mt-3" style="margin-bottom:30px;">
+        <div class="content mt-3">
 
         <div class="card">
             <div class="card-header">
-                <?php if(isset($_GET["page_from"]) && $_GET["id"] != ""){
-                    echo "Update Milk Provider ";
-
-                }else{
-                    echo "Add New Milk Provider ";
-                } ?>
+                
+                    Add New Milk Provider
+                
             </div>
 
             <div class="card-body">
@@ -61,9 +61,9 @@
 
                 </div>
                 <div class="form-group col-sm-6">
-                    <label for="inputAddress">Product Type</label>
+                    <label for="inputAddress">Milk Type</label>
                         <select class="form-control" id="milk_type" name="milk_type" required>
-                            <option value="">Select product type</option>
+                            <option value="">Select Type Of Milk</option>
 
                       <?php
                           $querys = "Select * from tbl_milk_type";
@@ -82,29 +82,15 @@
             
             </div>
 
-            <?php if(isset($_GET["page_from"]) && isset($_GET["page_from"]) == "update"){ ?>
-                <button type="submit" class="btn btn-primary" name="update_milk_provider">Update</button>
-
-               <?php }else{
-                    ?>
                     <button type="submit" class="btn btn-primary" name="add_milk_provider">Add Milk Provider</button>
 
-               <?php } ?>
             <button type="button" class="btn btn-primary" name="clear_milk_provider">Clear</button>
         </form>
         </div>
         </div>
+            
+
         </div> <!-- .content -->
-        
-        <div class="container footer">
-        <div class="row">
-            <div class="col-sm-3"></div>
-            <div class="col-sm-6">
-                <span ><strong>Copyright &copy; 2020-2021 <a href="http://clpinfotech.com/" target="_blank">CLP INFOTECH PVT LTD</a>.</strong></span>
-            </div>
-            <div class="col-sm-3"></div>
-        </div>
-    </div>
     </div><!-- /#right-panel -->
 
     <!-- Right Panel -->
@@ -220,20 +206,7 @@
 
     }
     
-    if(isset($_POST['update_milk_provider']) && $_POST['id'] != ""){
-        $id = $_POST["id"];
-        $name = $_POST["name"];
-        $mobile = $_POST["mobile"];
-        $email = $_POST["email"];
-        $address = $_POST["address"];
-        $milk_type = $_POST["milk_type"];
 
-        $query = "update tbl_milk_provider set name ='$name', mobile ='$mobile', email ='$email', address ='$address' , milk_type = '$milk_type' where id = $id";
-        mysqli_query($conn, $query);
-        header("Location: view-milk_provider.php", true, 301);
-        exit();
-    
-    }
     ob_end_flush();
 
 ?>

@@ -1,84 +1,14 @@
 <?php  
+        session_start();
+        if(!(isset($_SESSION["username"])) && !(isset($_SESSION["id"]))){
+            header("Location: index.php" );
+        } 
     include "include/db_connection.php";
     include "include/header.php";
 ?>
 
 <style>
-.footer {
-   position:relative;
-   bottom:0;
-   width:100%;
-   height:50px;   /* Height of the footer */
-   background:#fff;
-   text-align:center;
-   color:#869099;
-}
 
-.card-box {
-    position: relative;
-    color: #fff;
-    padding: 20px 10px 40px;
-    margin: 20px 0px;
-}
-.card-box:hover {
-    text-decoration: none;
-    color: #f1f1f1;
-}
-.card-box:hover .icon i {
-    font-size: 100px;
-    transition: 1s;
-    -webkit-transition: 1s;
-}
-.card-box .inner {
-    padding: 5px 10px 0 10px;
-}
-.card-box h3 {
-    font-size: 27px;
-    font-weight: bold;
-    margin: 0 0 8px 0;
-    white-space: nowrap;
-    padding: 0;
-    text-align: left;
-}
-.card-box p {
-    font-size: 15px;
-    color:#fff;
-}
-.card-box .icon {
-    position: absolute;
-    top: auto;
-    bottom: 5px;
-    right: 5px;
-    z-index: 0;
-    font-size: 72px;
-    color: rgba(0, 0, 0, 0.15);
-}
-.card-box .card-box-footer {
-    position: absolute;
-    left: 0px;
-    bottom: 0px;
-    text-align: center;
-    padding: 3px 0;
-    color: rgba(255, 255, 255, 0.8);
-    background: rgba(0, 0, 0, 0.1);
-    width: 100%;
-    text-decoration: none;
-}
-.card-box:hover .card-box-footer {
-    background: rgba(0, 0, 0, 0.3);
-}
-.bg-blue {
-    background-color: #00c0ef !important;
-}
-.bg-green {
-    background-color: #00a65a !important;
-}
-.bg-orange {
-    background-color: #f39c12 !important;
-}
-.bg-red {
-    background-color: #d9534f !important;
-}
 </style>
 
         <div class="breadcrumbs">
@@ -100,7 +30,7 @@
             </div>
         </div>
 
-        <div class="content mt-3">
+        <div class="content mt-3" style="margin-bottom:30px;">
 
 
         <div class="row">
@@ -115,13 +45,13 @@
                             }
                         }
                     ?>
-                        <h3> <?php  echo $total_mp; ?></h3>
+                        <h3> <?php  if(!$total_mp) echo 0; else echo $total_mp; ?></h3>
                         <p> Milk Providers </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+                        <i class="fa fa-user" aria-hidden="true"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-milk-provider.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
@@ -136,13 +66,13 @@
                             }
                         }
                     ?>
-                        <h3> <?php  echo $total_tc; ?> </h3>
+                        <h3> <?php  if(!$total_tc) echo 0; else echo $total_tc; ?> </h3>
                         <p> Happy Clients </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-money" aria-hidden="true"></i>
+                        <i class="fa fa-users" aria-hidden="true"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-client.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
@@ -157,31 +87,33 @@
                             }
                         }
                     ?>
-                        <h3> <?php  echo $total_od; ?> </h3>
+                        <h3> <?php  if(!$total_od) echo 0; else echo $total_od; ?> </h3>
                         <p> Today's Orders </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        <i class="fa fa-first-order" aria-hidden="true"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-orders.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-red">
                     <div class="inner">
                     <?php
-                        $result = mysqli_query($conn, "select count(*) total_mp from tbl_milk_provider");
+                        $today = date("Y/m/d");
+                        $result = mysqli_query($conn, "select sum(tmdp.amount) tmdp_amount, sum(tcp.amount) tcp_amount from tbl_client_payment tcp, tbl_milk_provider_payment tmdp where cast(tmdp.timestamp as date)='$today' and cast(tcp.timestamp as date) = '$today'");
                         if($result){
                             while($row = mysqli_fetch_assoc($result)){
-                                $total_mp = $row["total_mp"];
+                                $tmdp_amount = $row["tmdp_amount"];
+                                $tcp_amount = $row["tcp_amount"];
                             }
                         }
                     ?>
-                        <h3> 723 </h3>
+                        <h3> <?php if(!$tmdp_amount+$tcp_amount) echo 0; else echo $tmdp_amount+$tcp_amount; ?> </h3>
                         <p> Today's Collection </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-users"></i>
+                        <i class="fa fa-money"></i>
                     </div>
                     <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
@@ -205,9 +137,9 @@
                         <p> Today's Milk Delivered </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-delivered-milk.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
@@ -215,40 +147,41 @@
                 <div class="card-box bg-orange">
                     <div class="inner">
                     <?php
-                        $result = mysqli_query($conn, "select count(*) total_mp from tbl_milk_provider");
+                        $today = date("Y/m/d");
+                        $result = mysqli_query($conn, "select sum(quantity) today_total_quantity from tbl_recieved_milk where cast(timestamp as date) like '$today'");
                         if($result){
                             while($row = mysqli_fetch_assoc($result)){
-                                $total_mp = $row["total_mp"];
+                                $today_total_quantity = $row["today_total_quantity"];
                             }
                         }
                     ?>
-                        <h3> ₹185358 </h3>
+                        <h3> <?php if(!$today_total_quantity) echo 0; else echo $today_total_quantity; ?> </h3>
                         <p> Today's Milk Recieved </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-money" aria-hidden="true"></i>
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-milk-provider-payment.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-red">
                     <div class="inner">
                     <?php
-                        $result = mysqli_query($conn, "select count(*) total_mp from tbl_milk_provider");
+                        $result = mysqli_query($conn, "select sum(amount) tamount_total_collection from tbl_client_payment");
                         if($result){
                             while($row = mysqli_fetch_assoc($result)){
-                                $total_mp = $row["total_mp"];
+                                $tamount_total_collection = $row["tamount_total_collection"];
                             }
                         }
                     ?>
-                        <h3> 5464 </h3>
+                        <h3> <?php if(!$tamount_total_collection) echo 0; else echo $tamount_total_collection; ?> </h3>
                         <p> Total Collections </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        <i class="fa fa-money" aria-hidden="true"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-client-payment.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
@@ -268,7 +201,7 @@
                     <div class="icon">
                         <i class="fa fa-users"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-staff.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
@@ -278,20 +211,20 @@
                 <div class="card-box bg-orange">
                     <div class="inner">
                     <?php
-                        $result = mysqli_query($conn, "select count(*) total_mp from tbl_milk_provider");
+                        $result = mysqli_query($conn, "select sum(quantity) total_loss_quantity from tbl_milk_loss");
                         if($result){
                             while($row = mysqli_fetch_assoc($result)){
-                                $total_mp = $row["total_mp"];
+                                $total_loss_quantity = $row["total_loss_quantity"];
                             }
                         }
                     ?>
-                        <h3> 13436 </h3>
+                        <h3> <?php if(!$total_loss_quantity) echo 0; else echo $total_loss_quantity;?></h3>
                         <p> Total Milk Loss </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-graduation-cap" aria-hidden="true"></i>
+                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-milk-loss.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
 
@@ -299,73 +232,77 @@
                 <div class="card-box bg-red">
                     <div class="inner">
                     <?php
-                        $result = mysqli_query($conn, "select count(*) total_mp from tbl_milk_provider");
+                        $today = date("Y/m/d");
+                        $result = mysqli_query($conn, "select sum(quantity) today_total_loss_quantity from tbl_milk_loss where cast(timestamp as date) = '$today'");
                         if($result){
                             while($row = mysqli_fetch_assoc($result)){
-                                $total_mp = $row["total_mp"];
+                                $today_total_loss_quantity = $row["today_total_loss_quantity"];
                             }
                         }
                     ?>
-                        <h3> ₹185358 </h3>
+                        <h3> <?php if(!$today_total_loss_quantity) echo 0; else echo $today_total_loss_quantity;  ?> </h3>
                         <p> Today’s Milk Loss </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-money" aria-hidden="true"></i>
+                        <i class="fa fa-arrow-down" aria-hidden="true"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-milk-loss.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-green">
                     <div class="inner">
                     <?php
-                        $result = mysqli_query($conn, "select count(*) total_mp from tbl_milk_provider");
+                        $result = mysqli_query($conn, "select sum(amount) total_expense from tbl_expenses");
                         if($result){
                             while($row = mysqli_fetch_assoc($result)){
-                                $total_mp = $row["total_mp"];
+                                $total_expense = $row["total_expense"];
                             }
                         }
                     ?>
-                        <h3> 5464 </h3>
+                        <h3> <?php if(!$total_expense) echo 0; else echo $total_expense; ?></h3>
                         <p> Total Expenses </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        <i class="fa fa-money" aria-hidden="true"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-expenses.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <div class="col-lg-3 col-sm-6">
                 <div class="card-box bg-blue">
                     <div class="inner">
                     <?php
-                        $result = mysqli_query($conn, "select count(*) total_mp from tbl_milk_provider");
+                        $today = date("Y/m/d");
+                        $result = mysqli_query($conn, "select sum(amount) today_total_expense from tbl_expenses where cast(timestamp as date) = '$today'");
                         if($result){
                             while($row = mysqli_fetch_assoc($result)){
-                                $total_mp = $row["total_mp"];
+                                $today_total_expense = $row["today_total_expense"];
                             }
                         }
                     ?>
-                        <h3> 723 </h3>
+                        <h3> <?php if(!$today_total_expense) echo 0; else echo $today_total_expense; ?> </h3>
                         <p> Today's Expense </p>
                     </div>
                     <div class="icon">
-                        <i class="fa fa-users"></i>
+                        <i class="fa fa-money"></i>
                     </div>
-                    <a href="#" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="view-expenses.php" class="card-box-footer">View More <i class="fa fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>
-
-<div class="footer">
-    <span id="foot"><strong>Copyright &copy; 2020-2021 <a href="clpinfotech.com">CLP INFOTECH PVT LTD</a>.</strong> All rights
-    reserved.</span>
-  </div>
-        
-
-
-        </div> <!-- .content -->
-    </div><!-- /#right-panel -->
+    </div> <!-- .content -->
+    
+    <div class="container footer">
+        <div class="row">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-6">
+                <span ><strong>Copyright &copy; 2020-2021 <a href="http://clpinfotech.com/" target="_blank">CLP INFOTECH PVT LTD</a>.</strong></span>
+            </div>
+            <div class="col-sm-3"></div>
+        </div>
+    </div>
+</div><!-- /#right-panel -->
 
 
     <!-- Right Panel -->
